@@ -4,51 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Linhas Aéreas</title>
-  <style>
-    #grafo {
-      font-family: Arial, sans-serif;
-      margin-top: 20px;
-      border: 2px solid #ddd; /* Adicionando uma borda estilizada */
-    }
-
-    circle {
-      fill: steelblue;
-      stroke: white;
-      stroke-width: 2px;
-      cursor: pointer; /* Alterando o cursor para indicar interatividade */
-    }
-
-    line {
-      stroke: #ccc;
-      stroke-width: 2px;
-    }
-
-    .nomeAeroportoTexto {
-      font-size: 12px;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
-  <h1>Linhas Aéreas</h1>
+  <header>
+    <h1>Linhas Aéreas</h1>
+  </header>
 
-  <form id="formularioAeroportos">
-    <label for="nomeAeroporto">Nome do Aeroporto:</label>
-    <input type="text" id="nomeAeroporto" required>
-    <button type="button" onclick="adicionarAeroporto()">Adicionar Aeroporto</button>
-    <label for="origem">Aeroporto de Origem:</label>
-    <select id="origem"></select>
-    <label for="destino">Aeroporto de Destino:</label>
-    <select id="destino"></select>
-    <label for="peso">Peso da Conexão:</label>
-    <input type="number" id="peso" min="1" value="1" required>
-    <button type="button" onclick="adicionarConexao()">Adicionar Conexão</button>
-    <button type="button" onclick="calcularRota()">Calcular Rota</button>
-  </form>
-
-  <svg id="grafo" width="600" height="400"></svg>
-
-  <div id="infoRota"></div>
+  <section id="controles">
+    <div class="card">
+      <form id="formularioAeroportos">
+        <div class="campo-formulario">
+          <label for="nomeAeroporto">Nome do Aeroporto:</label>
+          <input type="text" id="nomeAeroporto" required>
+        </div>
+  
+        <div class="campo-formulario">
+          <label for="origem">Aeroporto de Origem:</label>
+          <select id="origem"></select>
+        </div>
+  
+        <div class="campo-formulario">
+          <label for="destino">Aeroporto de Destino:</label>
+          <select id="destino"></select>
+        </div>
+  
+        <div class="campo-formulario">
+          <label for="peso">Peso da Conexão:</label>
+          <input type="number" id="peso" min="1" value="1" required>
+        </div>
+  
+        <div class="botoes-formulario">
+          <button type="button" onclick="adicionarAeroporto()">Adicionar Aeroporto</button>
+          <button type="button" onclick="adicionarConexao()">Adicionar Conexão</button>
+          <button type="button" onclick="calcularRota()">Calcular Rota</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  
+  <section id="grafo-section">
+    <svg id="grafo" width="800" height="500"></svg>
+    <div id="infoRota"></div>
+  </section>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
