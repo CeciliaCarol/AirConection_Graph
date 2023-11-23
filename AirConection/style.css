@@ -1,0 +1,158 @@
+.card {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .campo-formulario {
+    margin-bottom: 10px;
+  }
+  
+  .campo-formulario label,
+  .campo-formulario select,
+  .campo-formulario input {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .botoes-formulario button {
+    margin-right: 10px;
+  }
+#grafo {
+    font-family: Arial, sans-serif;
+    margin-top: 20px;
+    border: 2px solid #ddd; 
+  }
+
+  circle {
+    fill: steelblue;
+    stroke: white;
+    stroke-width: 2px;
+    cursor: pointer; 
+  }
+
+  line {
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+
+  .nomeAeroportoTexto {
+    font-size: 12px;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  input[type="text"],
+  input[type="number"] {
+  padding: 8px;
+  border: 1px solid #A5B2C2;
+  border-radius: 5px; 
+  font-size: 14px;
+  transition: border-color 0.3s; 
+}
+
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="text"]:active,
+input[type="number"]:active {
+  border-color: #3498db; 
+}
+
+  button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  select {
+    padding: 8px;
+    border: 1px solid #A5B2C2;
+    border-radius: 5px; 
+    font-size: 14px;
+    transition: border-color 0.3s; 
+  }
+  
+  select:hover,
+  select:focus {
+    border-color: #3498db; 
+  }
+  
+ 
+  select option {
+    background-color: #fff; 
+    transition: background-color 0.3s; 
+  }
+  
+  select option:hover {
+    background-color: #3498db; 
+    color: #fff; 
+  }
+  
+  
+  button:hover {
+    background-color: #2980b9;
+  }
+  
+  
+  select:hover {
+    border: 1px solid #3498db;
+  }
+  
+  #controles {
+    background-color: #ecf0f1; 
+    padding: 20px;
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  form label {
+    margin-right: 5px;
+  }
+  
+  #grafo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  #grafo {
+    border: 2px solid #ddd;
+  }
+  
+  #infoRota {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
