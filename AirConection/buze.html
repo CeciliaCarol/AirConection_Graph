@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linhas Aéreas</title>
+  <style>
+    #grafo {
+      font-family: Arial, sans-serif;
+      margin-top: 20px;
+      border: 2px solid #ddd; /* Adicionando uma borda estilizada */
+    }
+
+    circle {
+      fill: steelblue;
+      stroke: white;
+      stroke-width: 2px;
+      cursor: pointer; /* Alterando o cursor para indicar interatividade */
+    }
+
+    line {
+      stroke: #ccc;
+      stroke-width: 2px;
+    }
+
+    .nomeAeroportoTexto {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Linhas Aéreas</h1>
+
+  <form id="formularioAeroportos">
+    <label for="nomeAeroporto">Nome do Aeroporto:</label>
+    <input type="text" id="nomeAeroporto" required>
+    <button type="button" onclick="adicionarAeroporto()">Adicionar Aeroporto</button>
+    <label for="origem">Aeroporto de Origem:</label>
+    <select id="origem"></select>
+    <label for="destino">Aeroporto de Destino:</label>
+    <select id="destino"></select>
+    <label for="peso">Peso da Conexão:</label>
+    <input type="number" id="peso" min="1" value="1" required>
+    <button type="button" onclick="adicionarConexao()">Adicionar Conexão</button>
+    <button type="button" onclick="calcularRota()">Calcular Rota</button>
+  </form>
+
+  <svg id="grafo" width="600" height="400"></svg>
+
+  <div id="infoRota"></div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    class Grafo {
+      constructor() {
+        this.nos = {};
+        this.arestas = [];
+      }
+
+      adicionarNo(aeroporto) {
+        this.nos[aeroporto] = { x: Math.random() * 600, y: Math.random() * 400 };
+      }
+
+      adicionarAresta(origem, destino, peso) {
+        this.arestas.push({ origem, destino, peso });
+      }
+
+      obterGrafo() {
+        return { nos: this.nos, arestas: this.arestas };
+      }
+    }
+
+    const grafoAereas = new Grafo();
+    const formularioAeroportos = document.getElementById('formularioAeroportos');
+    const svg = d3.select('#grafo');
+    const saidaGrafo = svg.append('g');
+
+    function adicionarAeroporto() {
+      const nomeAeroportoInput = document.getElementById('nomeAeroporto');
+      const nomeAeroporto = nomeAeroportoInput.value;
+
+      // Adiciona o aeroporto ao grafo
+      grafoAereas.adicionarNo(nomeAeroporto);
+
+      // Atualiza a saída do grafo
+      atualizarSaidaGrafo();
+      atualizarOpcoesAeroportos();
+
+      // Limpa o campo de entrada
+      nomeAeroportoInput.value = '';
+    }
+
+    function adicionarConexao() {
+      const origemSelect = document.getElementById('origem');
+      const destinoSelect = document.getElementById('destino');
+      const pesoInput = document.getElementById('peso');
+
+      const origem = origemSelect.value;
+      const destino = destinoSelect.value;
+      const peso = parseFloat(pesoInput.value);
+
+      if (origem !== destino) {
+        // Adiciona a conexão ao grafo
+        grafoAereas.adicionarAresta(origem, destino, peso);
+
+        // Atualiza a saída do grafo
+        atualizarSaidaGrafo();
+      } else {
+        alert('Aeroportos de origem e destino devem ser diferentes.');
+      }
+    }
+
+    function calcularRota() {
+      const origemSelect = document.getElementById('origem');
+      const destinoSelect = document.getElementById('destino');
+
+      const origem = origemSelect.value;
+      const destino = destinoSelect.value;
+
+      // Verifica se origem e destino são válidos
+      if (!(origem in grafoAereas.nos) || !(destino in grafoAereas.nos)) {
+        alert('Aeroportos de origem e destino devem ser válidos.');
+        return;
+      }
+
+      // Chama a função de Dijkstra para calcular a rota mais curta
+      const rotaMaisCurta = dijkstra(grafoAereas, origem, destino);
+
+      exibirRotaMaisCurta(rotaMaisCurta);
+
+      // Inicia a animação do avião ao longo da rota mais curta
+      animarAviao(rotaMaisCurta);
+
+      // Exibe a rota no console (pode ser exibida de outra maneira, conforme necessário)
+      console.log('Rota mais curta:', rotaMaisCurta);
+    }
+
+    function dijkstra(grafo, origem, destino) {
+      const nos = Object.keys(grafo.nos);
+      const arestas = grafo.arestas;
+
+      const distancia = {};
+      const visitado = {};
+      const anterior = {};
+
+      nos.forEach((no) => {
+        distancia[no] = Infinity;
+        visitado[no] = false;
+        anterior[no] = null;
+      });
+
+      distancia[origem] = 0;
+
+      for (let i = 0; i < nos.length - 1; i++) {
+        const u = encontrarNoMenorDistancia(nos, distancia, visitado);
+        visitado[u] = true;
+
+        for (const aresta of arestas) {
+          if (aresta.origem === u && !visitado[aresta.destino]) {
+            const novaDistancia = distancia[u] + aresta.peso;
+
+            if (novaDistancia < distancia[aresta.destino]) {
+              distancia[aresta.destino] = novaDistancia;
+              anterior[aresta.destino] = u;
+            }
+          }
+        }
+      }
+
+      // Constrói a rota mais curta
+      const rotaMaisCurta = construirRota(destino, anterior);
+
+      return rotaMaisCurta;
+    }
+
+    function encontrarNoMenorDistancia(nos, distancia, visitado) {
+      let menorDistancia = Infinity;
+      let noMenorDistancia = null;
+
+      for (const no of nos) {
+        if (!visitado[no] && distancia[no] < menorDistancia) {
+          menorDistancia = distancia[no];
+          noMenorDistancia = no;
+        }
+      }
+
+      return noMenorDistancia;
+    }
+
+    function construirRota(destino, anterior) {
+      const rota = [];
+      let noAtual = destino;
+
+      while (noAtual !== null) {
+        rota.unshift(noAtual);
+        noAtual = anterior[noAtual];
+      }
+
+      return rota;
+    }
+
+    function atualizarSaidaGrafo() {
+      const grafoAtual = grafoAereas.obterGrafo();
+
+      // Limpa o gráfico antes de recriar
+      saidaGrafo.selectAll('*').remove();
+
+      // Adiciona linhas para representar as conexões entre os aeroportos
+      const linhas = saidaGrafo.selectAll('line')
+        .data(grafoAtual.arestas)
+        .enter().append('line')
+        .attr('x1', d => grafoAtual.nos[d.origem].x)
+        .attr('y1', d => grafoAtual.nos[d.origem].y)
+        .attr('x2', d => grafoAtual.nos[d.destino].x)
+        .attr('y2', d => grafoAtual.nos[d.destino].y)
+        .on('mouseover', mostrarPesoConexao)
+        .on('mouseout', esconderPesoConexao);
+
+
+    // Função para mostrar o peso da conexão ao passar o mouse sobre a linha
+function mostrarPesoConexao(event, d) {
+  const x = (grafoAtual.nos[d.origem].x + grafoAtual.nos[d.destino].x) / 2;
+  const y = (grafoAtual.nos[d.origem].y + grafoAtual.nos[d.destino].y) / 2;
+
+  saidaGrafo.append('text')
+    .attr('class', 'pesoConexaoTexto')
+    .attr('x', x)
+    .attr('y', y)
+    .text(` ${d.peso}m`)
+    .style('text-anchor', 'middle') // Centraliza o texto
+    .style('font-size', '12px')
+    .style('fill', 'black');
+}
+
+// Função para esconder o peso da conexão ao remover o mouse
+function esconderPesoConexao() {
+  saidaGrafo.select('.pesoConexaoTexto').remove();
+}
+
+
+      // Adiciona círculos para representar os aeroportos
+      const nos = saidaGrafo.selectAll('circle')
+        .data(Object.keys(grafoAtual.nos))
+        .enter().append('circle')
+        .attr('cx', d => grafoAtual.nos[d].x) // Posição x
+        .attr('cy', d => grafoAtual.nos[d].y) // Posição y
+        .attr('r', 10) // Raio do círculo
+        .attr('id', d => d) // Identificador do círculo
+        .on('mouseover', expandirCirculo) // Adiciona evento de mouseover
+        .on('mouseout', contrairCirculo); // Adiciona evento de mouseout
+
+      // Adiciona eventos de clique para mostrar o nome do aeroporto
+      nos.on('click', d => alert(`Aeroporto: ${d}`));
+
+      // Função para expandir o círculo ao passar o mouse
+      function expandirCirculo(event, d) {
+        d3.select(this).transition().attr('r', 15); // Expandir o raio para 15
+        // Adiciona texto com o nome do aeroporto próximo ao círculo
+        saidaGrafo.append('text')
+          .attr('class', 'nomeAeroportoTexto')
+          .attr('x', grafoAtual.nos[d].x)
+          .attr('y', grafoAtual.nos[d].y - 20) // Posiciona o texto acima do círculo
+          .text(d)
+          .style('text-anchor', 'middle'); // Centraliza o texto
+      }
+
+      // Função para contrair o círculo ao remover o mouse
+      function contrairCirculo(event, d) {
+        d3.select(this).transition().attr('r', 10); // Contrair o raio de volta para 10
+        // Remove o texto do nome do aeroporto
+        saidaGrafo.select('.nomeAeroportoTexto').remove();
+      }
+    }
+
+    function atualizarOpcoesAeroportos() {
+      const origemSelect = document.getElementById('origem');
+      const destinoSelect = document.getElementById('destino');
+
+      // Limpa as opções existentes
+      origemSelect.innerHTML = '';
+      destinoSelect.innerHTML = '';
+
+      // Adiciona as opções com os nomes dos aeroportos
+      Object.keys(grafoAereas.nos).forEach(aeroporto => {
+        const origemOption = document.createElement('option');
+        origemOption.value = aeroporto;
+        origemOption.textContent = aeroporto;
+
+        const destinoOption = document.createElement('option');
+        destinoOption.value = aeroporto;
+        destinoOption.textContent = aeroporto;
+
+        origemSelect.appendChild(origemOption);
+        destinoSelect.appendChild(destinoOption);
+      });
+    }
+
+    function exibirRotaMaisCurta(rotaMaisCurta) {
+      const infoRota = document.getElementById('infoRota');
+      infoRota.innerHTML = `Rota mais curta: ${rotaMaisCurta.join(' -> ')}`;
+    }
+
+
+   // Função para animar o avião ao longo do caminho da rota mais curta
+function animarAviao(rotaMaisCurta) {
+  const aviao = svg.append('image')
+    .attr('x', grafoAereas.nos[rotaMaisCurta[0]].x - 8) // Ajuste para centralizar a imagem
+    .attr('y', grafoAereas.nos[rotaMaisCurta[0]].y - 8) // Ajuste para centralizar a imagem
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr('href', 'https://assets.stickpng.com/images/59cfc015d3b1936210a5ddb4.png'); // Substitua pelo caminho da sua imagem
+
+  function animacaoAviao(index) {
+    aviao.transition()
+      .duration(3000) // Duração da animação em milissegundos
+      .attr('x', grafoAereas.nos[rotaMaisCurta[index]].x - 8) // Ajuste para centralizar a imagem
+      .attr('y', grafoAereas.nos[rotaMaisCurta[index]].y - 8) // Ajuste para centralizar a imagem
+      .on('end', function () {
+        if (index < rotaMaisCurta.length - 1) {
+          animacaoAviao(index + 1);
+        } else {
+          // A animação está completa, remova o avião
+          aviao.remove();
+        }
+      });
+  }
+
+  animacaoAviao(1); // Inicia a animação a partir do segundo ponto da rota
+}
+
+
+  </script>
+
+</body>
+</html>
