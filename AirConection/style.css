@@ -28,7 +28,7 @@
   }
 
   circle {
-    fill: steelblue;
+    fill: #058789;
     stroke: white;
     stroke-width: 2px;
     cursor: pointer; 
@@ -49,7 +49,7 @@
   }
   
   header {
-    background-color: #3498db;
+    background-color: #992800;
     color: #fff;
     text-align: center;
     padding: 10px;
@@ -80,7 +80,7 @@ input[type="number"]:active {
 }
 
   button {
-    background-color: #3498db;
+    background-color: #E3A72F;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -99,7 +99,7 @@ input[type="number"]:active {
   
   select:hover,
   select:focus {
-    border-color: #3498db; 
+    border-color: #E3A72F; 
   }
   
  
@@ -115,7 +115,7 @@ input[type="number"]:active {
   
   
   button:hover {
-    background-color: #2980b9;
+    background-color: #a37a29;
   }
   
   
@@ -124,7 +124,7 @@ input[type="number"]:active {
   }
   
   #controles {
-    background-color: #ecf0f1; 
+    background-color: #FFFBE1; 
     padding: 20px;
     text-align: center;
   }
@@ -145,14 +145,26 @@ input[type="number"]:active {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-image: url('f.png');
+    background-size: cover; /* Para cobrir toda a área da seção */
+    background-position: center; /* Para centralizar a imagem */
+    background-repeat: no-repeat; /* Para evitar repetição da imagem */
+    
   }
   
   #grafo {
     border: 2px solid #ddd;
+    background-color: #fff;
+    border-radius: 10px;
   }
   
   #infoRota {
     text-align: center;
     margin-top: 20px;
+    background-color: #058789;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    color: #fff;
   }
   

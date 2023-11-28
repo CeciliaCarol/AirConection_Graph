@@ -9,7 +9,7 @@
 <body>
 
   <header>
-    <h1>Linhas Aéreas</h1>
+    <h1>AirConection</h1>
   </header>
 
   <section id="controles">
@@ -45,7 +45,7 @@
   </section>
   
   <section id="grafo-section">
-    <svg id="grafo" width="800" height="500"></svg>
+    <svg id="grafo" width="900" height="500"></svg>
     <div id="infoRota"></div>
   </section>
 
@@ -58,7 +58,7 @@
       }
 
       adicionarNo(aeroporto) {
-        this.nos[aeroporto] = { x: Math.random() * 600, y: Math.random() * 400 };
+        this.nos[aeroporto] = { x: Math.random() * 900, y: Math.random() * 500 };
       }
 
       adicionarAresta(origem, destino, peso) {
@@ -297,7 +297,7 @@ function esconderPesoConexao() {
 
     function exibirRotaMaisCurta(rotaMaisCurta) {
       const infoRota = document.getElementById('infoRota');
-      infoRota.innerHTML = `Rota mais curta: ${rotaMaisCurta.join(' -> ')}`;
+      infoRota.innerHTML = `Rota mais curta: ${rotaMaisCurta.join(' > ')}`;
     }
 
 
